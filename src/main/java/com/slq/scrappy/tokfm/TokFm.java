@@ -86,14 +86,7 @@ public class TokFm {
 
                 if (entity != null) {
                     InputStream inputStream = entity.getContent();
-                    DownloadCountingOutputStream outputStream = new DownloadCountingOutputStream(new FileOutputStream(path.toFile()), filename);
-                    outputStream.setListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            DownloadCountingOutputStream stream = (DownloadCountingOutputStream) e.getSource();
-                            stream.printDownloadStatus();
-                        }
-                    });
+                    DownloadCountingOutputStream outputStream = new DownloadCountingOutputStream(path);
                     IOUtils.copy(inputStream, outputStream);
                     outputStream.close();
                     System.out.println();
