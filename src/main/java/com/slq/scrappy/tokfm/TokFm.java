@@ -57,13 +57,6 @@ public class TokFm {
                 String fileId = podcast.getPodcast_id();
                 String uri = String.format("http://storage.tuba.fm/load_podcast/%s.mp3", fileId);
                 String output = "aaa.mp3";
-                String curl = String.format("curl " +
-                        "--data \"pre=load\" " +
-                        "--header \"X-Tuba:%s\" " +
-                        "--header \"X-Tuba-Load:%s\" " +
-                        "--header \"X-Tuba-Token:%s\" " +
-                        "http://storage.tuba.fm/load_podcast/%s.mp3 " +
-                        "-o \"%s\"", audioName, load, token, fileId, output);
 
                 HttpClient client = HttpClientBuilder.create().build();
                 HttpPost request = new HttpPost(uri);
