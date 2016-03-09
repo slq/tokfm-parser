@@ -32,15 +32,47 @@ public class TokFm {
     private static final String MD5_PHRASE = "MwbJdy3jUC2xChua/";
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
-        String startUrl = "http://audycje.tokfm.pl/podcasts";
-        String baseUrl = "http://audycje.tokfm.pl/podcasts?offset=%d";
+        if (args.length == 0) {
+            download();
+//            list();
+        }
 
-        for (int offset = 0; offset < 1000; offset++) {
-            String url = offset > 0 ? String.format(baseUrl, offset) : startUrl;
+    }
+
+    private static void list() throws IOException {
+        String startUrl = "http://audycje.tokfm.pl/podcasts?offset=%d";
+
+        for (int offset = 0; offset < 100000; offset++) {
+            String url = String.format(startUrl, offset);
 
             Podcasts podcasts = fetchPodcasts(url);
 
             for (Podcast podcast : podcasts.getPodcasts()) {
+
+                String filename = String.format("%s. %s - %s - %s.mp3", podcast.getPodcast_id(), podcast.getPodcast_emission_text(), podcast.getSeries_name(), podcast.getPodcast_name());
+
+                System.out.println(filename);
+            }
+        }
+    }
+
+    private static void download() throws IOException, NoSuchAlgorithmException {
+        //        String startUrl = "http://audycje.tokfm.pl/podcasts";
+        String startUrl = "http://audycje.tokfm.pl/podcasts?offset=%d";
+//          String startUrl = "http://audycje.tokfm.pl/podcasts?offset=%d&series_id=11";
+
+
+        for (int offset = 0; offset < 100000; offset++) {
+            String url = String.format(startUrl, offset);
+
+            Podcasts podcasts = fetchPodcasts(url);
+
+            for (Podcast podcast : podcasts.getPodcasts()) {
+//                System.out.println(podcast.getPodcast_emission_text());
+//                if(!podcast.getPodcast_emission_text().startsWith("2015-04-12")){
+//                    continue;
+//                }
+
                 String hexTime = currentTimeSecondsToHex();
                 String audioName = podcast.getPodcast_audio();
 
@@ -71,6 +103,7 @@ public class TokFm {
                 String filename = String.format("%s - %s - %s.mp3", podcast.getPodcast_emission_text(), podcast.getSeries_name(), podcast.getPodcast_name());
                 String home = System.getProperty("user.home");
                 Path path = Paths.get(home, "Downloads", "TokFM", filename);
+//                Path path = Paths.get(home, "Downloads", "TokFM", "Post Factum", filename);
 
                 if (path.toFile().exists()) {
                     System.out.println(String.format("%s - Skipping", filename));

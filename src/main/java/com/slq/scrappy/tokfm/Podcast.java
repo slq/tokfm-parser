@@ -1,5 +1,7 @@
 package com.slq.scrappy.tokfm;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class Podcast {
     private String podcast_id;
     private String podcast_name;
@@ -40,13 +42,17 @@ public class Podcast {
     }
 
     private static String normalize(String str) {
-        return str.replace('?', '.')
+        return StringUtils.substring(
+                str.replace('?', '.')
                 .replace('!', '.')
-                .replace('\"', '\'')
                 .replaceFirst(":", "")
                 .replaceAll("\'\'", "\'")
+                .replaceAll("\"", "\'")
                 .replaceAll("\r", "")
                 .replaceAll("\n", "")
-                .replaceAll("„", "");
+                .replaceAll("„", "")
+                .replaceAll("\\\\", "-")
+                .replaceAll("/", "-")
+                .trim(), 0, 200);
     }
 }
