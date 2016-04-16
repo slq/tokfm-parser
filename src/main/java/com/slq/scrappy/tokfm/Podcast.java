@@ -43,9 +43,9 @@ public class Podcast {
 
     private static String normalize(String str) {
         return StringUtils.substring(
-                str.replace('?', '.')
-                .replace('!', '.')
-                .replaceFirst(":", "")
+                str.replaceAll("\\?", ".")
+                .replaceAll("!", ".")
+                .replaceAll(":", "")
                 .replaceAll("\'\'", "\'")
                 .replaceAll("\"", "\'")
                 .replaceAll("\r", "")

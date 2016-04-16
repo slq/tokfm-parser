@@ -3,6 +3,7 @@ package com.slq.scrappy.tokfm;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.cli.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -10,11 +11,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.jsoup.Jsoup;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -30,12 +27,30 @@ import static org.jsoup.Jsoup.connect;
 public class TokFm {
 
     private static final String MD5_PHRASE = "MwbJdy3jUC2xChua/";
+    private static final String LIST_OPTION = "l";
+    private static final String SKIP_EXISTING_OPTION = "s";
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
-        if (args.length == 0) {
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, ParseException {
+        // create Options object
+        Options options = new Options();
+
+        // add t option
+        options.addOption(LIST_OPTION, false, "list podcasts");
+        options.addOption(SKIP_EXISTING_OPTION, false, "skip existing podcasts");
+
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = parser.parse(options, args);
+
+        if (cmd.hasOption(LIST_OPTION)) {
+            list();
+        } else if (cmd.hasOption(SKIP_EXISTING_OPTION)) {
+            continuousDownload();
+        } else {
             download();
-//            list();
         }
+    }
+
+    private static void continuousDownload() {
 
     }
 
@@ -106,8 +121,10 @@ public class TokFm {
 //                Path path = Paths.get(home, "Downloads", "TokFM", "Post Factum", filename);
 
                 if (path.toFile().exists()) {
-                    System.out.println(String.format("%s - Skipping", filename));
-                    continue;
+                    System.out.println(String.format("%s - Already exists. Exiting...", filename));
+                    return;
+//                    System.out.println(String.format("%s - Skipping", filename));
+//                    continue;
                 }
 
                 if (entity != null) {
