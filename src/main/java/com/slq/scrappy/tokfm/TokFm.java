@@ -43,15 +43,10 @@ public class TokFm {
 
         if (cmd.hasOption(LIST_OPTION)) {
             list();
-        } else if (cmd.hasOption(SKIP_EXISTING_OPTION)) {
-            continuousDownload();
-        } else {
-            download();
+        } else{
+            boolean skipOption = cmd.hasOption(SKIP_EXISTING_OPTION);
+            download(skipOption);
         }
-    }
-
-    private static void continuousDownload() {
-
     }
 
     private static void list() throws IOException {
@@ -71,7 +66,7 @@ public class TokFm {
         }
     }
 
-    private static void download() throws IOException, NoSuchAlgorithmException {
+    private static void download(boolean skipOption) throws IOException, NoSuchAlgorithmException {
         //        String startUrl = "http://audycje.tokfm.pl/podcasts";
         String startUrl = "http://audycje.tokfm.pl/podcasts?offset=%d";
 //          String startUrl = "http://audycje.tokfm.pl/podcasts?offset=%d&series_id=11";
@@ -121,10 +116,13 @@ public class TokFm {
 //                Path path = Paths.get(home, "Downloads", "TokFM", "Post Factum", filename);
 
                 if (path.toFile().exists()) {
-                    System.out.println(String.format("%s - Already exists. Exiting...", filename));
-                    return;
-//                    System.out.println(String.format("%s - Skipping", filename));
-//                    continue;
+                    if(skipOption) {
+                        System.out.println(String.format("%s - Skipping", filename));
+                        return;
+                    } else {
+                        System.out.println(String.format("%s - Already exists. Exiting...", filename));
+                        continue;
+                    }
                 }
 
                 if (entity != null) {
