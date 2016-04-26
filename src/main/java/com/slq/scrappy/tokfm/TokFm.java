@@ -78,33 +78,29 @@ public class TokFm {
             Podcasts podcasts = fetchPodcasts(url);
 
             for (Podcast podcast : podcasts.getPodcasts()) {
-//                System.out.println(podcast.getPodcast_emission_text());
-//                if(!podcast.getPodcast_emission_text().startsWith("2015-04-12")){
-//                    continue;
-//                }
-
                 String hexTime = currentTimeSecondsToHex();
                 String audioName = podcast.getPodcast_audio();
 
                 byte[] digest = digest(hexTime, audioName);
                 BigInteger bigInt = new BigInteger(1, digest);
+
                 String mdp = bigInt.toString(16).toUpperCase();
                 // not needed?
                 mdp = StringUtils.leftPad(mdp, 32, '0');
-
                 String load = hexTime + "." + mdp.substring(12, 16) + "." + mdp.substring(8, 12) + "." + mdp.substring(16, 20) + "." + mdp.substring(20, 24) + ".";
+
                 Random random = new Random();
                 String token = String.format(String.valueOf(random.nextInt(255)), 'x').toUpperCase() + "." + mdp.substring(0, 4) + "." + mdp.substring(4, 8) + "." + mdp.substring(28, 32) + "." + mdp.substring(24, 28) + ".";
 
                 String fileId = podcast.getPodcast_id();
                 String uri = String.format("http://storage.tuba.fm/load_podcast/%s.mp3", fileId);
-                String output = "aaa.mp3";
 
-                HttpClient client = HttpClientBuilder.create().build();
                 HttpPost request = new HttpPost(uri);
                 request.addHeader("X-Tuba", audioName);
                 request.addHeader("X-Tuba-Load", load);
                 request.addHeader("X-Tuba-Token", token);
+
+                HttpClient client = HttpClientBuilder.create().build();
                 HttpResponse response = client.execute(request);
 
 
@@ -113,15 +109,14 @@ public class TokFm {
                 String filename = String.format("%s - %s - %s.mp3", podcast.getPodcast_emission_text(), podcast.getSeries_name(), podcast.getPodcast_name());
                 String home = System.getProperty("user.home");
                 Path path = Paths.get(home, "Downloads", "TokFM", filename);
-//                Path path = Paths.get(home, "Downloads", "TokFM", "Post Factum", filename);
 
                 if (path.toFile().exists()) {
                     if(skipOption) {
                         System.out.println(String.format("%s - Skipping", filename));
-                        return;
+                        continue;
                     } else {
                         System.out.println(String.format("%s - Already exists. Exiting...", filename));
-                        continue;
+                        return;
                     }
                 }
 
