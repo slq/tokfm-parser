@@ -22,6 +22,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
+import static org.apache.commons.lang3.StringUtils.substring;
 import static org.jsoup.Jsoup.connect;
 
 public class TokFm {
@@ -111,11 +112,12 @@ public class TokFm {
                 Path path = Paths.get(home, "Downloads", "TokFM", filename);
 
                 if (path.toFile().exists()) {
+                    String shortFilename = substring(filename, 0, 150);
                     if(skipOption) {
-                        System.out.println(String.format("%s - Skipping", filename));
+                        System.out.println(String.format("%-150s : Skipping", shortFilename));
                         continue;
                     } else {
-                        System.out.println(String.format("%s - Already exists. Exiting...", filename));
+                        System.out.println(String.format("%-150s : Already exists. Exiting...", shortFilename));
                         return;
                     }
                 }
