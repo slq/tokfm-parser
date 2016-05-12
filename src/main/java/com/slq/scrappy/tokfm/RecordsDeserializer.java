@@ -2,6 +2,7 @@ package com.slq.scrappy.tokfm;
 
 
 import com.google.gson.*;
+import com.slq.scrappy.tokfm.podcast.Podcasts;
 
 import java.lang.reflect.Type;
 
