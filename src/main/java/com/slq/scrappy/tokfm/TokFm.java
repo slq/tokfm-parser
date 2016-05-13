@@ -12,9 +12,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,8 +26,9 @@ import static org.apache.commons.lang3.StringUtils.substring;
 
 public class TokFm {
 
-    private static final String MD5_PHRASE = "MwbJdy3jUC2xChua/";
+    private static final String HOME_DIRECTORY = System.getProperty("user.home");
     private static final String LIST_OPTION = "l";
+    private static final String MD5_PHRASE = "MwbJdy3jUC2xChua/";
     private static final String SKIP_EXISTING_OPTION = "s";
     private static final String START_URL = "http://audycje.tokfm.pl/podcasts?offset=%d";
 
@@ -76,39 +75,10 @@ public class TokFm {
             Podcasts podcasts = podcastDownloadService.listPodcasts(url);
 
             for (Podcast podcast : podcasts.getPodcasts()) {
-                String hexTime = currentTimeSecondsToHex();
-                String audioName = podcast.getAudio();
-
-                byte[] digest = digest(hexTime, audioName);
-                BigInteger bigInt = new BigInteger(1, digest);
-
-                String mdp = bigInt.toString(16).toUpperCase();
-                // not needed?
-                mdp = StringUtils.leftPad(mdp, 32, '0');
-                String load = hexTime + "." + mdp.substring(12, 16) + "." + mdp.substring(8, 12) + "." + mdp.substring(16, 20) + "." + mdp.substring(20, 24) + ".";
-
-                Random random = new Random();
-                String token = format(valueOf(random.nextInt(255)), 'x').toUpperCase() + "." + mdp.substring(0, 4) + "." + mdp.substring(4, 8) + "." + mdp.substring(28, 32) + "." + mdp.substring(24, 28) + ".";
-
-                String fileId = podcast.getId();
-                String uri = format("http://storage.tuba.fm/load_podcast/%s.mp3", fileId);
-
-                HttpPost request = new HttpPost(uri);
-                request.addHeader("X-Tuba", audioName);
-                request.addHeader("X-Tuba-Load", load);
-                request.addHeader("X-Tuba-Token", token);
-
-                HttpClient client = HttpClientBuilder.create().build();
-                HttpResponse response = client.execute(request);
-
-
-                HttpEntity entity = response.getEntity();
-
                 String filename = podcast.getTargetFilename();
-                String home = System.getProperty("user.home");
-                Path path = Paths.get(home, "Downloads", "TokFM", filename);
+                Path targetPath = Paths.get(HOME_DIRECTORY, "Downloads", "TokFM", filename);
 
-                if (path.toFile().exists()) {
+                if (targetPath.toFile().exists()) {
                     String shortFilename = substring(filename, 0, 150);
                     if (skipOption) {
                         System.out.println(format("%-150s : Skipping", shortFilename));
@@ -119,15 +89,56 @@ public class TokFm {
                     }
                 }
 
-                if (entity != null) {
-                    InputStream inputStream = entity.getContent();
-                    DownloadCountingOutputStream outputStream = new DownloadCountingOutputStream(path);
-                    IOUtils.copy(inputStream, outputStream);
-                    outputStream.close();
-                    System.out.println();
-                }
+                HttpPost request = prepareRequest(podcast);
+                HttpEntity entity = sendRequest(request);
+                downloadRequestedFile(toStream(entity), toStream(targetPath));
             }
         }
+    }
+
+    private DownloadCountingOutputStream toStream(Path targetPath) throws FileNotFoundException {
+        return new DownloadCountingOutputStream(targetPath);
+    }
+
+    private InputStream toStream(HttpEntity entity) throws IOException {
+        return entity.getContent();
+    }
+
+    private void downloadRequestedFile(InputStream inputStream, OutputStream outputStream) throws IOException {
+        IOUtils.copy(inputStream, outputStream);
+        outputStream.close();
+        System.out.println();
+    }
+
+    private HttpEntity sendRequest(HttpPost request) throws IOException {
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpResponse response = client.execute(request);
+        return response.getEntity();
+    }
+
+    private HttpPost prepareRequest(Podcast podcast) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        String hexTime = currentTimeSecondsToHex();
+        String audioName = podcast.getAudio();
+
+        byte[] digest = digest(hexTime, audioName);
+        BigInteger bigInt = new BigInteger(1, digest);
+
+        String mdp = bigInt.toString(16).toUpperCase();
+        // not needed?
+        mdp = StringUtils.leftPad(mdp, 32, '0');
+        String load = hexTime + "." + mdp.substring(12, 16) + "." + mdp.substring(8, 12) + "." + mdp.substring(16, 20) + "." + mdp.substring(20, 24) + ".";
+
+        Random random = new Random();
+        String token = format(valueOf(random.nextInt(255)), 'x').toUpperCase() + "." + mdp.substring(0, 4) + "." + mdp.substring(4, 8) + "." + mdp.substring(28, 32) + "." + mdp.substring(24, 28) + ".";
+
+        String fileId = podcast.getId();
+        String uri = format("http://storage.tuba.fm/load_podcast/%s.mp3", fileId);
+
+        HttpPost request = new HttpPost(uri);
+        request.addHeader("X-Tuba", audioName);
+        request.addHeader("X-Tuba-Load", load);
+        request.addHeader("X-Tuba-Token", token);
+        return request;
     }
 
     private String currentTimeSecondsToHex() {
