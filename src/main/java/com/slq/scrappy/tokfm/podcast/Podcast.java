@@ -74,6 +74,6 @@ public class Podcast {
     }
 
     public String getTargetFilename() {
-        return format("%s - %s - %s.mp3", emissionText, seriesName, name);
+        return format("%s - %s - %s.mp3", getEmissionText(), getSeriesName(), getName());
     }
 }
