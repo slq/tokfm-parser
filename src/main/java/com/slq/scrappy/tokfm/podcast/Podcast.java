@@ -70,10 +70,13 @@ public class Podcast {
                 .replaceAll("\n", "")
                 .replaceAll("„", "")
                 .replaceAll("\\\\", "-")
-                .replaceAll("/", "-");
+                .replaceAll("/", "-")
+                .replaceAll(">", ".")
+                .replaceAll("<", ".");
     }
 
     public String getTargetFilename() {
         return format("%s - %s - %s.mp3", getEmissionText(), getSeriesName(), getName());
+                //.replaceAll(".", ".");
     }
 }
