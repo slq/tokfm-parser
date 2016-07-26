@@ -27,6 +27,8 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
@@ -34,135 +36,158 @@ import static org.apache.commons.lang3.StringUtils.substring;
 
 public class TokFm {
 
-    private static final String HOME_DIRECTORY = System.getProperty("user.home");
-    private static final String LIST_OPTION = "l";
-    private static final String MD5_PHRASE = "MwbJdy3jUC2xChua/";
-    private static final String SKIP_EXISTING_OPTION = "s";
-    private static final String START_URL = "http://audycje.tokfm.pl/podcasts?offset=%d";
+	private static final String HOME_DIRECTORY = System.getProperty("user.home");
+	private static final String MD5_PHRASE = "MwbJdy3jUC2xChua/";
+	private static final String START_URL = "http://audycje.tokfm.pl/podcasts?offset=%d";
 
-    private PodcastDownloadService podcastDownloadService;
+	private static final String LIST_OPTION = "l";
+	private static final String MATCH_PATTERN_OPTION = "m";
+	private static final String SKIP_EXISTING_OPTION = "s";
 
-    public void setPodcastDownloadService(PodcastDownloadService podcastDownloadService) {
-        this.podcastDownloadService = podcastDownloadService;
-    }
+	private PodcastDownloadService podcastDownloadService;
 
-    public void downloadPodcasts(String[] args) throws IOException, NoSuchAlgorithmException, ParseException {
-        // create Options object
-        Options options = new Options();
+	public void setPodcastDownloadService(PodcastDownloadService podcastDownloadService) {
+		this.podcastDownloadService = podcastDownloadService;
+	}
 
-        // add t option
-        options.addOption(LIST_OPTION, false, "list podcasts");
-        options.addOption(SKIP_EXISTING_OPTION, false, "skip existing podcasts");
+	public void downloadPodcasts(String[] args) throws IOException, NoSuchAlgorithmException, ParseException {
+		// create Options object
+		Options options = new Options();
 
-        CommandLineParser parser = new DefaultParser();
-        CommandLine cmd = parser.parse(options, args);
+		// add t option
+		options.addOption(LIST_OPTION, false, "list podcasts")
+				.addOption(SKIP_EXISTING_OPTION, false, "skip existing podcasts")
+				.addOption(MATCH_PATTERN_OPTION, true, "match podcast name with pattern");
 
-        if (cmd.hasOption(LIST_OPTION)) {
-            list();
-        } else {
-            boolean skipOption = cmd.hasOption(SKIP_EXISTING_OPTION);
-            download(skipOption);
-        }
-    }
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = parser.parse(options, args);
 
-    private void list() throws IOException {
-        for (int offset = 0; offset < 100000; offset++) {
-            String url = format(START_URL, offset);
-            podcastDownloadService.listPodcasts(url)
-                    .forEach()
-                    .map(Podcast::getTargetFilename)
-                    .forEach(System.out::println);
-        }
-    }
+		if (cmd.hasOption(LIST_OPTION)) {
+			String matchPattern = cmd.getOptionValue(MATCH_PATTERN_OPTION);
+			list(matchPattern);
+		} else {
+			String matchPattern = cmd.getOptionValue(MATCH_PATTERN_OPTION);
+			boolean skipOption = cmd.hasOption(SKIP_EXISTING_OPTION);
+			download(matchPattern, skipOption);
+		}
+	}
 
-    private void download(boolean skipOption) throws IOException, NoSuchAlgorithmException {
-        //          String startUrl = "http://audycje.tokfm.pl/podcasts?offset=%d&series_id=11";
-        for (int offset = 0; offset < 100000; offset++) {
-            String url = format(START_URL, offset);
+	private void list(String matchPattern) throws IOException {
+		Pattern pattern = Pattern.compile(matchPattern, Pattern.CASE_INSENSITIVE);
 
-            Podcasts podcasts = podcastDownloadService.listPodcasts(url);
+		for (int offset = 0; offset < 100000; offset++) {
+			String url = format(START_URL, offset);
+			podcastDownloadService.listPodcasts(url)
+					.forEach()
+					.filter(podcast -> matching(pattern, podcast.getName()))
+					.map(Podcast::getTargetFilename)
+					.forEach(System.out::println);
+		}
+	}
 
-            for (Podcast podcast : podcasts.getPodcasts()) {
-                String filename = podcast.getTargetFilename();
-                Path targetPath = Paths.get(HOME_DIRECTORY, "Downloads", "TokFM", filename);
+	private boolean matching(Pattern pattern, String text) {
+//		pattern.matcher(text).find();
+		Matcher matcher = pattern.matcher(text);
+		if (matcher.find()) {
+			System.out.println("Matched: " + matcher.group());
+			return true;
+		}
+		return false;
+	}
 
-                if (targetPath.toFile().exists()) {
-                    String shortFilename = substring(filename, 0, 150);
-                    if (skipOption) {
-                        System.out.println(format("%-150s : Skipping", shortFilename));
-                        continue;
-                    } else {
-                        System.out.println(format("%-150s : Already exists. Exiting...", shortFilename));
-                        return;
-                    }
-                }
+	private void download(String matchPattern, boolean skipOption) throws IOException, NoSuchAlgorithmException {
+		//          String startUrl = "http://audycje.tokfm.pl/podcasts?offset=%d&series_id=11";
+		Pattern pattern = Pattern.compile(matchPattern, Pattern.CASE_INSENSITIVE);
+		for (int offset = 0; offset < 100000; offset++) {
+			String url = format(START_URL, offset);
 
-                HttpPost request = prepareRequest(podcast);
-                HttpEntity entity = sendRequest(request);
-                downloadRequestedFile(toStream(entity), toStream(targetPath));
-            }
-        }
-    }
+			Podcasts podcasts = podcastDownloadService.listPodcasts(url);
 
-    private DownloadCountingOutputStream toStream(Path targetPath) throws FileNotFoundException {
-        return new DownloadCountingOutputStream(targetPath);
-    }
+			for (Podcast podcast : podcasts.getPodcasts()) {
+				if (!matching(pattern, podcast.getName())) {
+					continue;
+				}
 
-    private InputStream toStream(HttpEntity entity) throws IOException {
-        return entity.getContent();
-    }
+				String filename = podcast.getTargetFilename();
+				Path targetPath = Paths.get(HOME_DIRECTORY, "Downloads", "TokFM", "Zandberg", filename);
 
-    private void downloadRequestedFile(InputStream inputStream, OutputStream outputStream) throws IOException {
-        IOUtils.copy(inputStream, outputStream);
-        outputStream.close();
-        System.out.println();
-    }
+				if (targetPath.toFile().exists()) {
+					String shortFilename = substring(filename, 0, 150);
+					if (skipOption) {
+						System.out.println(format("%-150s : Skipping", shortFilename));
+						continue;
+					} else {
+						System.out.println(format("%-150s : Already exists. Exiting...", shortFilename));
+						return;
+					}
+				}
 
-    private HttpEntity sendRequest(HttpPost request) throws IOException {
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpResponse response = client.execute(request);
-        return response.getEntity();
-    }
+				HttpPost request = prepareRequest(podcast);
+				HttpEntity entity = sendRequest(request);
+				downloadRequestedFile(toStream(entity), toStream(targetPath));
+			}
+		}
+	}
 
-    private HttpPost prepareRequest(Podcast podcast) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        String hexTime = currentTimeSecondsToHex();
-        String audioName = podcast.getAudio();
+	private DownloadCountingOutputStream toStream(Path targetPath) throws FileNotFoundException {
+		return new DownloadCountingOutputStream(targetPath);
+	}
 
-        byte[] digest = digest(hexTime, audioName);
-        BigInteger bigInt = new BigInteger(1, digest);
+	private InputStream toStream(HttpEntity entity) throws IOException {
+		return entity.getContent();
+	}
 
-        String mdp = bigInt.toString(16).toUpperCase();
-        // not needed?
-        mdp = StringUtils.leftPad(mdp, 32, '0');
-        String load = hexTime + "." + mdp.substring(12, 16) + "." + mdp.substring(8, 12) + "." + mdp.substring(16, 20) + "." + mdp.substring(20, 24) + ".";
+	private void downloadRequestedFile(InputStream inputStream, OutputStream outputStream) throws IOException {
+		IOUtils.copy(inputStream, outputStream);
+		outputStream.close();
+		System.out.println();
+	}
 
-        Random random = new Random();
-        String token = format(valueOf(random.nextInt(255)), 'x').toUpperCase() + "." + mdp.substring(0, 4) + "." + mdp.substring(4, 8) + "." + mdp.substring(28, 32) + "." + mdp.substring(24, 28) + ".";
+	private HttpEntity sendRequest(HttpPost request) throws IOException {
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpResponse response = client.execute(request);
+		return response.getEntity();
+	}
 
-        String fileId = podcast.getId();
-        String uri = format("http://storage.tuba.fm/load_podcast/%s.mp3", fileId);
+	private HttpPost prepareRequest(Podcast podcast) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		String hexTime = currentTimeSecondsToHex();
+		String audioName = podcast.getAudio();
 
-        HttpPost request = new HttpPost(uri);
-        request.addHeader("X-Tuba", audioName);
-        request.addHeader("X-Tuba-Load", load);
-        request.addHeader("X-Tuba-Token", token);
-        return request;
-    }
+		byte[] digest = digest(hexTime, audioName);
+		BigInteger bigInt = new BigInteger(1, digest);
 
-    private String currentTimeSecondsToHex() {
-        return format("%x", (int) Math.floor(System.currentTimeMillis() / 1000)).toUpperCase();
-    }
+		String mdp = bigInt.toString(16).toUpperCase();
+		// not needed?
+		mdp = StringUtils.leftPad(mdp, 32, '0');
+		String load = hexTime + "." + mdp.substring(12, 16) + "." + mdp.substring(8, 12) + "." + mdp.substring(16, 20) + "." + mdp.substring(20, 24) + ".";
 
-    private byte[] digest(String n, String audioName) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        String message = MD5_PHRASE + audioName + n;
-        MessageDigest md5 = MessageDigest.getInstance("MD5");
-        byte[] bytes = message.getBytes("UTF-8");
-        return md5.digest(bytes);
-    }
+		Random random = new Random();
+		String token = format(valueOf(random.nextInt(255)), 'x').toUpperCase() + "." + mdp.substring(0, 4) + "." + mdp.substring(4, 8) + "." + mdp.substring(28, 32) + "." + mdp.substring(24, 28) + ".";
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, ParseException {
-        TokFm tokFm = new TokFm();
-        tokFm.setPodcastDownloadService(new PodcastDownloadService());
-        tokFm.downloadPodcasts(args);
-    }
+		String fileId = podcast.getId();
+		String uri = format("http://storage.tuba.fm/load_podcast/%s.mp3", fileId);
+
+		HttpPost request = new HttpPost(uri);
+		request.addHeader("X-Tuba", audioName);
+		request.addHeader("X-Tuba-Load", load);
+		request.addHeader("X-Tuba-Token", token);
+		return request;
+	}
+
+	private String currentTimeSecondsToHex() {
+		return format("%x", (int) Math.floor(System.currentTimeMillis() / 1000)).toUpperCase();
+	}
+
+	private byte[] digest(String n, String audioName) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		String message = MD5_PHRASE + audioName + n;
+		MessageDigest md5 = MessageDigest.getInstance("MD5");
+		byte[] bytes = message.getBytes("UTF-8");
+		return md5.digest(bytes);
+	}
+
+	public static void main(String[] args) throws IOException, NoSuchAlgorithmException, ParseException {
+		TokFm tokFm = new TokFm();
+		tokFm.setPodcastDownloadService(new PodcastDownloadService());
+		tokFm.downloadPodcasts(args);
+	}
 }

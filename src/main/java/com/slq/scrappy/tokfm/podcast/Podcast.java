@@ -2,6 +2,8 @@ package com.slq.scrappy.tokfm.podcast;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.regex.Pattern;
+
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.substring;
 
@@ -61,9 +63,9 @@ public class Podcast {
     }
 
     private static String replaceUnwantedCharacters(String str) {
-        return str.replaceAll("\\?", ".")
-                .replaceAll("!", ".")
-                .replaceAll(":", "")
+        str = replaceButNotLast(str, "!", ".");
+        str = replaceButNotLast(str, "?", ".");
+        return str.replaceAll(":", "")
                 .replaceAll("\'\'", "\'")
                 .replaceAll("\"", "\'")
                 .replaceAll("\r", "")
@@ -73,6 +75,18 @@ public class Podcast {
                 .replaceAll("/", "-")
                 .replaceAll(">", ".")
                 .replaceAll("<", ".");
+    }
+
+    private static String replaceButNotLast(String str, String from, String to) {
+        if(!str.contains(from)){
+            return str;
+        }
+
+        if(str.lastIndexOf(from) == str.length()-1){
+            str = str.substring(0, str.length()-1);
+        }
+
+        return str.replaceAll(Pattern.quote(from), to);
     }
 
     public String getTargetFilename() {
