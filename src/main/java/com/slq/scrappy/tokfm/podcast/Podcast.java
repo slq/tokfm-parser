@@ -74,7 +74,8 @@ public class Podcast {
                 .replaceAll("\\\\", "-")
                 .replaceAll("/", "-")
                 .replaceAll(">", ".")
-                .replaceAll("<", ".");
+                .replaceAll("<", ".")
+                .replaceAll("\\|", ".");
     }
 
     private static String replaceButNotLast(String str, String from, String to) {
