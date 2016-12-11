@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.substring;
 
 public class TokFm {
@@ -43,6 +44,7 @@ public class TokFm {
 	private static final String LIST_OPTION = "l";
 	private static final String MATCH_PATTERN_OPTION = "m";
 	private static final String SKIP_EXISTING_OPTION = "s";
+	public static final int ITERATION_MAX_COUNT = 100000;
 
 	private PodcastDownloadService podcastDownloadService;
 
@@ -72,21 +74,23 @@ public class TokFm {
 		}
 	}
 
-	private void list(String matchPattern) throws IOException {
-		Pattern pattern = Pattern.compile(matchPattern, Pattern.CASE_INSENSITIVE);
-
+	private void list(String matchPattern) throws IOException{
 		for (int offset = 0; offset < 100000; offset++) {
 			String url = format(START_URL, offset);
 			podcastDownloadService.listPodcasts(url)
 					.forEach()
-					.filter(podcast -> matching(pattern, podcast.getName()))
+					.filter(podcast -> matching(matchPattern, podcast.getName()))
 					.map(Podcast::getTargetFilename)
 					.forEach(System.out::println);
 		}
 	}
 
-	private boolean matching(Pattern pattern, String text) {
-//		pattern.matcher(text).find();
+	private boolean matching(String matchPattern, String text) {
+		if(isBlank(matchPattern)){
+			return true;
+		}
+
+		Pattern pattern = Pattern.compile(matchPattern, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(text);
 		if (matcher.find()) {
 			System.out.println("Matched: " + matcher.group());
@@ -97,19 +101,18 @@ public class TokFm {
 
 	private void download(String matchPattern, boolean skipOption) throws IOException, NoSuchAlgorithmException {
 		//          String startUrl = "http://audycje.tokfm.pl/podcasts?offset=%d&series_id=11";
-		Pattern pattern = Pattern.compile(matchPattern, Pattern.CASE_INSENSITIVE);
-		for (int offset = 0; offset < 100000; offset++) {
+		for (int offset = 0; offset < ITERATION_MAX_COUNT; offset++) {
 			String url = format(START_URL, offset);
 
 			Podcasts podcasts = podcastDownloadService.listPodcasts(url);
 
 			for (Podcast podcast : podcasts.getPodcasts()) {
-				if (!matching(pattern, podcast.getName())) {
+				if (!matching(matchPattern, podcast.getName())) {
 					continue;
 				}
 
 				String filename = podcast.getTargetFilename();
-				Path targetPath = Paths.get(HOME_DIRECTORY, "Downloads", "TokFM", "Zandberg", filename);
+				Path targetPath = Paths.get(HOME_DIRECTORY, "Downloads", "TokFM", filename);
 
 				if (targetPath.toFile().exists()) {
 					String shortFilename = substring(filename, 0, 150);
