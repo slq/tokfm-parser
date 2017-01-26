@@ -106,7 +106,7 @@ public class TokFm {
 			Podcasts podcasts = podcastDownloadService.listPodcasts(url);
 
 			for (Podcast podcast : podcasts.getPodcasts()) {
-				if (!matching(matchPattern, podcast.getName())) {
+				if (!matching(matchPattern, podcast.getTargetFilename())) {
 					continue;
 				}
 
