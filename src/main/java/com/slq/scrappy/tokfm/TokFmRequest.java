@@ -1,19 +1,17 @@
 package com.slq.scrappy.tokfm;
 
 import com.slq.scrappy.tokfm.podcast.Podcast;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.HttpPost;
-
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Random;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.methods.HttpGet;
+
 
 import static java.lang.String.format;
-import static java.lang.String.valueOf;
 
-public class TokFmRequest extends HttpPost {
+public class TokFmRequest extends HttpGet {
 
     private static final String MD5_PHRASE = "MwbJdy3jUC2xChua/";
 
@@ -24,26 +22,12 @@ public class TokFmRequest extends HttpPost {
     public static TokFmRequest from(Podcast podcast) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String hexTime = currentTimeSecondsToHex();
         String audioName = podcast.getAudio();
-
         byte[] digest = digest(hexTime, audioName);
         BigInteger bigInt = new BigInteger(1, digest);
-
-        String mdp = bigInt.toString(16).toUpperCase();
-        // not needed?
+        String mdp = bigInt.toString(16).toLowerCase();
         mdp = StringUtils.leftPad(mdp, 32, '0');
-        String load = hexTime + "." + mdp.substring(12, 16) + "." + mdp.substring(8, 12) + "." + mdp.substring(16, 20) + "." + mdp.substring(20, 24) + ".";
-
-        Random random = new Random();
-        String token = format(valueOf(random.nextInt(255)), 'x').toUpperCase() + "." + mdp.substring(0, 4) + "." + mdp.substring(4, 8) + "." + mdp.substring(28, 32) + "." + mdp.substring(24, 28) + ".";
-
-        String fileId = podcast.getId();
-        String uri = format("http://storage.tuba.fm/load_podcast/%s.mp3", fileId);
-
-        TokFmRequest request = new TokFmRequest(uri);
-        request.addHeader("X-Tuba", audioName);
-        request.addHeader("X-Tuba-Load", load);
-        request.addHeader("X-Tuba-Token", token);
-        return request;
+        String uri = format("http://storage.tuba.fm/podcast/%s/%s/%s", mdp, hexTime, audioName);
+        return new TokFmRequest(uri);
     }
 
     private static String currentTimeSecondsToHex() {

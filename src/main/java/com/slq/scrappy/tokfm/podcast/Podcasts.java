@@ -10,8 +10,6 @@ public class Podcasts {
 
 	private Podcasts() {}
 
-	public static Podcasts EMPTY = new Podcasts();
-
 	public List<Podcast> getPodcasts() {
 		return records;
 	}
