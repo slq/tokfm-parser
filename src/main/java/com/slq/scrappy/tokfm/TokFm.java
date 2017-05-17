@@ -2,7 +2,7 @@ package com.slq.scrappy.tokfm;
 
 import com.slq.scrappy.tokfm.podcast.FileAlreadyExistsPodcastInterceptor;
 import com.slq.scrappy.tokfm.podcast.FilenameMatchingPodcastInterceptor;
-import com.slq.scrappy.tokfm.podcast.Podcast;
+import com.slq.scrappy.tokfm.podcast.PodcastDownloadInterceptor;
 import com.slq.scrappy.tokfm.podcast.PodcastDownloadService;
 import com.slq.scrappy.tokfm.podcast.PodcastInterceptor;
 import com.slq.scrappy.tokfm.podcast.PodcastInterceptorChain;
@@ -10,8 +10,6 @@ import com.slq.scrappy.tokfm.podcast.Podcasts;
 import com.slq.scrappy.tokfm.podcast.ResponseProcessor;
 import com.slq.scrappy.tokfm.podcast.SkipExistingFilesPodcastInterceptor;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +18,6 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 
 
@@ -28,7 +25,6 @@ import static java.lang.String.format;
 
 public class TokFm {
 
-	private static final String HOME_DIRECTORY = System.getProperty("user.home");
 	private static final String START_URL = "http://audycje.tokfm.pl/podcasts?offset=%d";
 
 	private static final String MATCH_PATTERN_OPTION = "m";
@@ -66,6 +62,7 @@ public class TokFm {
             interceptors.add(new FileAlreadyExistsPodcastInterceptor());
         }
 
+        interceptors.add(new PodcastDownloadInterceptor(podcastDownloadService, responseProcessor));
 
         PodcastInterceptorChain chain = new PodcastInterceptorChain(interceptors);
 
@@ -78,17 +75,7 @@ public class TokFm {
 
 			Podcasts podcasts = podcastDownloadService.listPodcasts(url);
 
-			for (Podcast podcast : podcasts.getPodcasts()) {
-                chain.process(podcast);
-
-				String filename = podcast.getTargetFilename();
-				Path targetPath = Paths.get(HOME_DIRECTORY, "Downloads", "TokFM", filename);
-
-
-				TokFmRequest request = TokFmRequestFactory.create(podcast);
-				HttpResponse httpResponse = podcastDownloadService.executeRequest(request);
-				responseProcessor.process(httpResponse, targetPath);
-			}
+            podcasts.forEach(chain::process);
 		}
 	}
 

@@ -19,7 +19,7 @@ public class FileAlreadyExistsPodcastInterceptor implements PodcastInterceptor {
             String shortFilename = substring(filename, 0, 150);
             String message = String.format("%-150s : Already exists. Exiting...", shortFilename);
             System.out.println(message);
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(shortFilename + " already exists");
         }
     }
 }

@@ -1,8 +1,5 @@
 package com.slq.scrappy.tokfm.podcast;
 
-import com.slq.scrappy.tokfm.podcast.Podcast;
-import com.slq.scrappy.tokfm.podcast.PodcastInterceptor;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 

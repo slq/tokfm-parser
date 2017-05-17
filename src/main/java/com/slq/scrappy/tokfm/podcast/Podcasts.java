@@ -1,12 +1,20 @@
 package com.slq.scrappy.tokfm.podcast;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.function.Consumer;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Podcasts {
 
+	@JsonProperty
 	private List<Podcast> records = new ArrayList<>();
+
+	private long total;
+
+	private long limit;
 
 	private Podcasts() {}
 
@@ -14,8 +22,16 @@ public class Podcasts {
 		return records;
 	}
 
-	public Stream<Podcast> forEach() {
-		return records.stream();
+	public long getTotal() {
+		return total;
+	}
+
+	public long getLimit() {
+		return limit;
+	}
+
+	public void forEach(Consumer<Podcast> consumer) {
+		records.stream().forEach(consumer);
 	}
 
 	@Override
