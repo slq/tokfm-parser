@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 public final class Configuration {
 
     private static final String PROPERTIES_FILE = "application.properties";
@@ -24,7 +27,7 @@ public final class Configuration {
             throw new RuntimeException("Cannot find " + property + " in " + PROPERTIES_FILE);
         }
 
-        if (value.isEmpty()) {
+        if (isBlank(value)) {
             throw new RuntimeException("Property " + property + " is not set in " + PROPERTIES_FILE);
         }
 
