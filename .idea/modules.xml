@@ -3,8 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/tokfm.iml" filepath="$PROJECT_DIR$/.idea/modules/tokfm.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tokfm_main.iml" filepath="$PROJECT_DIR$/.idea/modules/tokfm_main.iml" group="tokfm" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tokfm_test.iml" filepath="$PROJECT_DIR$/.idea/modules/tokfm_test.iml" group="tokfm" />
     </modules>
   </component>
 </project>
