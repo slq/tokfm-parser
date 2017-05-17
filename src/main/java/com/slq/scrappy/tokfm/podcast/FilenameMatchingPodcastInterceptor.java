@@ -1,8 +1,5 @@
 package com.slq.scrappy.tokfm.podcast;
 
-import com.slq.scrappy.tokfm.podcast.Podcast;
-import com.slq.scrappy.tokfm.podcast.PodcastInterceptor;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +11,13 @@ public class FilenameMatchingPodcastInterceptor implements PodcastInterceptor {
 
     public FilenameMatchingPodcastInterceptor(String pattern) {
         this.pattern = pattern;
+    }
+
+    @Override
+    public void process(Podcast podcast) {
+        if (!matching(pattern, podcast.getTargetFilename())) {
+            throw new IllegalArgumentException("Pattern not matching");
+        }
     }
 
     private boolean matching(String matchPattern, String text) {
@@ -28,12 +32,5 @@ public class FilenameMatchingPodcastInterceptor implements PodcastInterceptor {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void process(Podcast podcast) {
-        if (!matching(pattern, podcast.getTargetFilename())) {
-            throw new IllegalArgumentException("Pattern not matching");
-        }
     }
 }

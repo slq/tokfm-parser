@@ -61,9 +61,9 @@ public class TokFm {
         }
 
         if (cmd.hasOption(SKIP_EXISTING_OPTION)) {
-            interceptors.add(new FileAlreadyExistsPodcastInterceptor());
-        } else {
             interceptors.add(new SkipExistingFilesPodcastInterceptor());
+        } else {
+            interceptors.add(new FileAlreadyExistsPodcastInterceptor());
         }
 
 
