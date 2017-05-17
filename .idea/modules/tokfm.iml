@@ -59,5 +59,10 @@
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.json:json:20160810" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.json:json:20160810" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.json:json:20160810" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.mockito:mockito-core:2.7.22" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: net.bytebuddy:byte-buddy:1.6.11" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: net.bytebuddy:byte-buddy-agent:1.6.11" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: eu.codearte.catch-exception:catch-exception:1.4.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.objenesis:objenesis:2.5.1" level="project" />
   </component>
 </module>

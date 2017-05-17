@@ -1,11 +1,13 @@
 package com.slq.scrappy.tokfm;
 
 import com.slq.scrappy.tokfm.podcast.FileAlreadyExistsPodcastInterceptor;
+import com.slq.scrappy.tokfm.podcast.repository.FilePodcastRepository;
 import com.slq.scrappy.tokfm.podcast.FilenameMatchingPodcastInterceptor;
 import com.slq.scrappy.tokfm.podcast.PodcastDownloadInterceptor;
 import com.slq.scrappy.tokfm.podcast.PodcastDownloadService;
 import com.slq.scrappy.tokfm.podcast.PodcastInterceptor;
 import com.slq.scrappy.tokfm.podcast.PodcastInterceptorChain;
+import com.slq.scrappy.tokfm.podcast.repository.PodcastRepository;
 import com.slq.scrappy.tokfm.podcast.Podcasts;
 import com.slq.scrappy.tokfm.podcast.ResponseProcessor;
 import com.slq.scrappy.tokfm.podcast.SkipExistingFilesPodcastInterceptor;
@@ -59,7 +61,8 @@ public class TokFm {
         if (cmd.hasOption(SKIP_EXISTING_OPTION)) {
             interceptors.add(new SkipExistingFilesPodcastInterceptor());
         } else {
-            interceptors.add(new FileAlreadyExistsPodcastInterceptor());
+            PodcastRepository podcastRepository = new FilePodcastRepository();
+            interceptors.add(new FileAlreadyExistsPodcastInterceptor(podcastRepository));
         }
 
         interceptors.add(new PodcastDownloadInterceptor(podcastDownloadService, responseProcessor));

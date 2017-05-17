@@ -36,4 +36,7 @@ dependencies {
     compile 'com.google.guava:guava:21.0'
     testCompile 'junit:junit:4.11'
     testCompile 'org.assertj:assertj-core:3.7.0'
+    testCompile 'org.mockito:mockito-core:2.7.22'
+    testCompile 'eu.codearte.catch-exception:catch-exception:1.4.6'
+
 }
