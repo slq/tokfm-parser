@@ -5,18 +5,20 @@ import com.google.gson.GsonBuilder;
 import com.slq.scrappy.tokfm.TokFmRequest;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.NTCredentials;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.client.HttpClient;
 
 
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.jsoup.Jsoup.connect;
 
 public class PodcastDownloadService {
+
+    private final HttpClient client;
+
+    public PodcastDownloadService(HttpClient client) {
+        this.client = client;
+    }
 
     public Podcasts listPodcasts(String url) throws IOException {
         String json = "";
@@ -38,8 +40,6 @@ public class PodcastDownloadService {
     }
 
     public HttpResponse executeRequest(TokFmRequest request) throws IOException {
-        DefaultHttpClient client = new DefaultHttpClient();
-
         HttpResponse response = client.execute(request);
         if (response.getStatusLine().getStatusCode() != SC_OK) {
             System.err.println(response.getStatusLine().getReasonPhrase());
