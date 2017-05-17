@@ -1,27 +1,29 @@
 package com.slq.scrappy.tokfm.podcast;
 
-import com.google.gson.annotations.SerializedName;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.regex.Pattern;
+
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.substring;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Podcast {
 
-    @SerializedName("podcast_id")
+    @JsonProperty("podcast_id")
     private String id;
 
-    @SerializedName("podcast_name")
+    @JsonProperty("podcast_name")
     private String name;
 
-    @SerializedName("podcast_audio")
+    @JsonProperty("podcast_audio")
     private String audio;
 
-    @SerializedName("series_name")
+    @JsonProperty("series_name")
     private String seriesName;
 
-    @SerializedName("podcast_emission_text")
+    @JsonProperty("podcast_emission_text")
     private String emissionText;
 
     private Podcast() {}
