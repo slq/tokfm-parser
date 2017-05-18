@@ -3,10 +3,8 @@ package com.slq.scrappy.tokfm.podcast;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 public class FilenameMatchingPodcastInterceptor implements PodcastInterceptor {
+
     private String pattern;
 
     public FilenameMatchingPodcastInterceptor(String pattern) {
@@ -21,10 +19,6 @@ public class FilenameMatchingPodcastInterceptor implements PodcastInterceptor {
     }
 
     private boolean matching(String matchPattern, String text) {
-        if (isBlank(matchPattern)) {
-            return true;
-        }
-
         Pattern pattern = Pattern.compile(matchPattern, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
