@@ -12,17 +12,15 @@ public class FilenameMatchingPodcastInterceptor implements PodcastInterceptor {
     }
 
     @Override
-    public void process(Podcast podcast) {
-        if (!matching(pattern, podcast.getTargetFilename())) {
-            throw new IllegalArgumentException("Pattern not matching");
-        }
+    public boolean process(Podcast podcast) {
+        return matching(pattern, podcast.getTargetFilename());
     }
 
     private boolean matching(String matchPattern, String text) {
         Pattern pattern = Pattern.compile(matchPattern, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
-            System.out.println("Matched: " + matcher.group());
+            System.out.println("Found matched text: (" + matcher.group() + ")");
             return true;
         }
         return false;

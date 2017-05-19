@@ -20,7 +20,7 @@ public class PodcastDownloadInterceptor implements PodcastInterceptor {
     }
 
     @Override
-    public void process(Podcast podcast) {
+    public boolean process(Podcast podcast) {
         String filename = podcast.getTargetFilename();
         Path targetPath = Paths.get(HOME_DIRECTORY, "Downloads", "TokFM", filename);
 
@@ -32,5 +32,7 @@ public class PodcastDownloadInterceptor implements PodcastInterceptor {
         } catch (IOException e){
             throw new RuntimeException("Faile to download podcast " + podcast, e);
         }
+
+        return true;
     }
 }

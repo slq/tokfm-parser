@@ -14,7 +14,7 @@ public class FileAlreadyExistsPodcastInterceptor implements PodcastInterceptor {
     }
 
     @Override
-    public void process(Podcast podcast) {
+    public boolean process(Podcast podcast) {
         String filename = podcast.getTargetFilename();
 
         if (podcastRepository.exists(filename)) {
@@ -23,5 +23,7 @@ public class FileAlreadyExistsPodcastInterceptor implements PodcastInterceptor {
             System.out.println(message);
             throw new IllegalArgumentException("Podcast: [" + shortFilename + "] already exists");
         }
+
+        return true;
     }
 }
