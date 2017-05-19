@@ -1,0 +1,17 @@
+apply plugin: 'checkstyle'
+
+// Set a mandatory system property used in checkstyle.xml
+def checkstyleCacheFilePropName = 'checkstyle.cache.file'
+if (!System.properties[checkstyleCacheFilePropName]) {
+	System.properties[checkstyleCacheFilePropName] = '' // no cache file
+}
+
+checkstyle {
+	project.ext.checkstyleVersion = '7.4'
+	project.ext.sevntuChecksVersion = '1.23.0'
+}
+
+dependencies {
+	checkstyle 'com.puppycrawl.tools:checkstyle:7.4'
+	checkstyle 'com.github.sevntu.checkstyle:sevntu-checks:1.23.0'
+}

@@ -2,7 +2,7 @@ group 'com.slq.scrappy'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
-apply plugin: 'idea'
+apply from: 'gradle/checkstyle.gradle'
 
 sourceCompatibility = 1.8
 
@@ -17,7 +17,6 @@ task fatJar(type: Jar) {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
-
 
 repositories {
     mavenCentral()
