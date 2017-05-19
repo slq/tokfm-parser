@@ -9,27 +9,30 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 public class HttpClientFactory {
 
-    public static final String PROXY_HOST = Configuration.getProperty("http.proxyHost");
-    public static final String PROXY_PORT = Configuration.getProperty("http.proxyPort");
-    public static final String PROXY_USER = Configuration.getProperty("http.proxyUser");
-    public static final String PROXY_PASSWORD = Configuration.getProperty("http.proxyPassword");
+	public static final String PROXY_HOST = Configuration.getProperty("http.proxyHost");
+	public static final String PROXY_PORT = Configuration.getProperty("http.proxyPort");
+	public static final String PROXY_USER = Configuration.getProperty("http.proxyUser");
+	public static final String PROXY_PASSWORD = Configuration.getProperty("http.proxyPassword");
 
-    public static HttpClient createClient() {
-        return new DefaultHttpClient();
-    }
+	private HttpClientFactory() {
+	}
 
-    public static HttpClient createNtlmProxyClient() {
-        System.setProperty("http.proxyHost", PROXY_HOST);
-        System.setProperty("http.proxyPort", PROXY_PORT);
+	public static HttpClient createClient() {
+		return new DefaultHttpClient();
+	}
 
-        DefaultHttpClient client = new DefaultHttpClient();
-        client.getCredentialsProvider().setCredentials(
-                new AuthScope(PROXY_HOST, Integer.parseInt(PROXY_PORT)),
-                new NTCredentials(PROXY_USER + ":" + PROXY_PASSWORD));
+	public static HttpClient createNtlmProxyClient() {
+		System.setProperty("http.proxyHost", PROXY_HOST);
+		System.setProperty("http.proxyPort", PROXY_PORT);
 
-        HttpHost proxy = new HttpHost(PROXY_HOST, Integer.parseInt(PROXY_PORT));
-        client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+		DefaultHttpClient client = new DefaultHttpClient();
+		client.getCredentialsProvider().setCredentials(
+				new AuthScope(PROXY_HOST, Integer.parseInt(PROXY_PORT)),
+				new NTCredentials(PROXY_USER + ":" + PROXY_PASSWORD));
 
-        return client;
-    }
+		HttpHost proxy = new HttpHost(PROXY_HOST, Integer.parseInt(PROXY_PORT));
+		client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+
+		return client;
+	}
 }

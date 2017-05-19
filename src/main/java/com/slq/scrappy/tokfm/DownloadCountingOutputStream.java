@@ -11,34 +11,37 @@ import static org.apache.commons.lang3.StringUtils.substring;
 
 public class DownloadCountingOutputStream extends CountingOutputStream {
 
-    private final String streamName;
+	public static final double KILO = 1024.0;
+	public static final double MEGA = 1024.0;
+	public static final int CONSOLE_LINE_WIDTH = 150;
+	private final String streamName;
 
-    public DownloadCountingOutputStream(Path path) throws FileNotFoundException {
-        super(new FileOutputStream(path.toFile()));
-        this.streamName = path.getFileName().toString();
-    }
+	public DownloadCountingOutputStream(Path path) throws FileNotFoundException {
+		super(new FileOutputStream(path.toFile()));
+		this.streamName = path.getFileName().toString();
+	}
 
-    @Override
-    protected void afterWrite(int n) throws IOException {
-        super.afterWrite(n);
-        printDownloadStatus();
-    }
+	@Override
+	protected void afterWrite(int n) throws IOException {
+		super.afterWrite(n);
+		printDownloadStatus();
+	}
 
-    public String getStreamName() {
-        return streamName;
-    }
+	public String getStreamName() {
+		return streamName;
+	}
 
-    public double getDownloadedMB() {
-        return getByteCount() / 1024.0 / 1024.0;
-    }
+	public double getDownloadedMB() {
+		return getByteCount() / KILO / MEGA;
+	}
 
-    public void printDownloadStatus() {
-        double byteCount = getDownloadedMB();
-        String streamName = getStreamName();
-        try {
-            System.out.write(String.format("%-150s : %.2f\r", substring(streamName, 0, 150), byteCount).getBytes());
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    }
+	public void printDownloadStatus() {
+		double byteCount = getDownloadedMB();
+		String streamName = getStreamName();
+		try {
+			System.out.write(String.format("%-150s : %.2f\r", substring(streamName, 0, CONSOLE_LINE_WIDTH), byteCount).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

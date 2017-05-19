@@ -2,6 +2,8 @@ package com.slq.scrappy.tokfm.podcast;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -16,7 +18,8 @@ public class Podcasts {
 
 	private long limit;
 
-	private Podcasts() {}
+	private Podcasts() {
+	}
 
 	public List<Podcast> getPodcasts() {
 		return records;
@@ -36,8 +39,10 @@ public class Podcasts {
 
 	@Override
 	public String toString() {
-		return "Podcasts{" +
-				"records=" + records +
-				'}';
+		return new ToStringBuilder(this)
+				.append("records", records)
+				.append("total", total)
+				.append("limit", limit)
+				.toString();
 	}
 }
