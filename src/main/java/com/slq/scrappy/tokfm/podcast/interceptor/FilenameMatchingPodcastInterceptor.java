@@ -1,5 +1,6 @@
-package com.slq.scrappy.tokfm.podcast;
+package com.slq.scrappy.tokfm.podcast.interceptor;
 
+import com.slq.scrappy.tokfm.podcast.Podcast;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

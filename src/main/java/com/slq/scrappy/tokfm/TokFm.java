@@ -1,16 +1,16 @@
 package com.slq.scrappy.tokfm;
 
-import com.slq.scrappy.tokfm.podcast.FileAlreadyExistsPodcastInterceptor;
+import com.slq.scrappy.tokfm.podcast.interceptor.FileAlreadyExistsPodcastInterceptor;
 import com.slq.scrappy.tokfm.podcast.repository.FilePodcastRepository;
-import com.slq.scrappy.tokfm.podcast.FilenameMatchingPodcastInterceptor;
-import com.slq.scrappy.tokfm.podcast.PodcastDownloadInterceptor;
+import com.slq.scrappy.tokfm.podcast.interceptor.FilenameMatchingPodcastInterceptor;
+import com.slq.scrappy.tokfm.podcast.interceptor.PodcastDownloadInterceptor;
 import com.slq.scrappy.tokfm.podcast.PodcastDownloadService;
-import com.slq.scrappy.tokfm.podcast.PodcastInterceptor;
+import com.slq.scrappy.tokfm.podcast.interceptor.PodcastInterceptor;
 import com.slq.scrappy.tokfm.podcast.PodcastInterceptorChain;
 import com.slq.scrappy.tokfm.podcast.repository.PodcastRepository;
 import com.slq.scrappy.tokfm.podcast.Podcasts;
 import com.slq.scrappy.tokfm.podcast.ResponseProcessor;
-import com.slq.scrappy.tokfm.podcast.SkipExistingFilesPodcastInterceptor;
+import com.slq.scrappy.tokfm.podcast.interceptor.SkipExistingFilesPodcastInterceptor;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;

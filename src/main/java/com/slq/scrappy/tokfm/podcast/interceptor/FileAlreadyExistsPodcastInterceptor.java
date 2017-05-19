@@ -1,5 +1,6 @@
-package com.slq.scrappy.tokfm.podcast;
+package com.slq.scrappy.tokfm.podcast.interceptor;
 
+import com.slq.scrappy.tokfm.podcast.Podcast;
 import com.slq.scrappy.tokfm.podcast.repository.PodcastRepository;
 
 
@@ -19,9 +20,8 @@ public class FileAlreadyExistsPodcastInterceptor implements PodcastInterceptor {
 
         if (podcastRepository.exists(filename)) {
             String shortFilename = substring(filename, 0, 150);
-            String message = String.format("%-150s : Already exists. Exiting...", shortFilename);
-            System.out.println(message);
-            throw new IllegalArgumentException("Podcast: [" + shortFilename + "] already exists");
+            System.out.println(String.format("%-150s : Already exists. Exiting...", shortFilename));
+            return false;
         }
 
         return true;

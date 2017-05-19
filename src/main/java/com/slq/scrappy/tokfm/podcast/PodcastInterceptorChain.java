@@ -1,5 +1,6 @@
 package com.slq.scrappy.tokfm.podcast;
 
+import com.slq.scrappy.tokfm.podcast.interceptor.PodcastInterceptor;
 import java.util.List;
 
 public class PodcastInterceptorChain {

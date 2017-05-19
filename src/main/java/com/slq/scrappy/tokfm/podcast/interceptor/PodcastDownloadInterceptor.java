@@ -1,7 +1,10 @@
-package com.slq.scrappy.tokfm.podcast;
+package com.slq.scrappy.tokfm.podcast.interceptor;
 
 import com.slq.scrappy.tokfm.TokFmRequest;
 import com.slq.scrappy.tokfm.TokFmRequestFactory;
+import com.slq.scrappy.tokfm.podcast.Podcast;
+import com.slq.scrappy.tokfm.podcast.PodcastDownloadService;
+import com.slq.scrappy.tokfm.podcast.ResponseProcessor;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,7 +33,8 @@ public class PodcastDownloadInterceptor implements PodcastInterceptor {
             HttpResponse httpResponse = podcastDownloadService.executeRequest(request);
             responseProcessor.process(httpResponse, targetPath);
         } catch (IOException e){
-            throw new RuntimeException("Faile to download podcast " + podcast, e);
+            System.out.println("Failed to download podcast " + podcast);
+            return false;
         }
 
         return true;
