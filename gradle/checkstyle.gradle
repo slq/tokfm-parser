@@ -9,6 +9,13 @@ if (!System.properties[checkstyleCacheFilePropName]) {
 checkstyle {
 	project.ext.checkstyleVersion = '7.4'
 	project.ext.sevntuChecksVersion = '1.23.0'
+
+	repositories {
+		mavenCentral()
+		maven {
+			url "http://sevntu-checkstyle.github.com/sevntu.checkstyle/maven2"
+		}
+	}
 }
 
 dependencies {
