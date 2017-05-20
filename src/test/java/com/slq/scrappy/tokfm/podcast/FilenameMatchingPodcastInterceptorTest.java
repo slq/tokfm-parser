@@ -6,9 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.googlecode.catchexception.apis.BDDCatchException.caughtException;
-import static com.googlecode.catchexception.apis.BDDCatchException.when;
-import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -24,22 +22,22 @@ public class FilenameMatchingPodcastInterceptorTest {
 	private FilenameMatchingPodcastInterceptor interceptor;
 
 	@Test
-	public void shouldThrowExceptionWhenFilenameDoesNotMatchPattern() {
+	public void shouldReturnFalseWhenFilenameDoesNotMatchPattern() {
 		interceptor = new FilenameMatchingPodcastInterceptor(NOT_MATCHING_PATTERN);
 		given(podcast.getTargetFilename()).willReturn(PODCAST_FILENAME);
 
-		when(interceptor).process(podcast);
+		boolean shouldContinue = interceptor.process(podcast);
 
-		then(caughtException()).isInstanceOf(IllegalArgumentException.class);
+		assertThat(shouldContinue).isFalse();
 	}
 
 	@Test
-	public void shouldDoNothingWhenFilenameMatchesPattern() {
+	public void shouldReturnTrueWhenFilenameMatchesPattern() {
 		interceptor = new FilenameMatchingPodcastInterceptor(MATCHING_PATTERN);
 		given(podcast.getTargetFilename()).willReturn(PODCAST_FILENAME);
 
-		when(interceptor).process(podcast);
+		boolean shouldContinue = interceptor.process(podcast);
 
-		then(caughtException()).doesNotThrowAnyException();
+		assertThat(shouldContinue).isTrue();
 	}
 }

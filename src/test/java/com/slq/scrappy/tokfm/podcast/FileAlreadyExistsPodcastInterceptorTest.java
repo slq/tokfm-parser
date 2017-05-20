@@ -8,9 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.googlecode.catchexception.apis.BDDCatchException.caughtException;
-import static com.googlecode.catchexception.apis.BDDCatchException.when;
-import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -32,20 +30,20 @@ public class FileAlreadyExistsPodcastInterceptorTest {
 	}
 
 	@Test
-	public void shouldThrowExceptionWhenFileAlreadyExists() {
+	public void shouldReturnFalseWhenFileAlreadyExists() {
 		given(podcastRepository.exists(PODCAST_NAME)).willReturn(true);
 
-		when(interceptor).process(podcast);
+		boolean shouldContinue = interceptor.process(podcast);
 
-		then(caughtException()).isInstanceOf(IllegalArgumentException.class);
+		assertThat(shouldContinue).isFalse();
 	}
 
 	@Test
-	public void shouldDoNothingWhenFileDoesNotExist() {
+	public void shouldReturnTrueWhenFileDoesNotExist() {
 		given(podcastRepository.exists(PODCAST_NAME)).willReturn(false);
 
-		when(interceptor).process(podcast);
+		boolean shouldContinue = interceptor.process(podcast);
 
-		then(caughtException()).doesNotThrowAnyException();
+		assertThat(shouldContinue).isTrue();
 	}
 }

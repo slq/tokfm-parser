@@ -7,7 +7,7 @@ import static org.apache.commons.lang3.StringUtils.substring;
 
 public class FileAlreadyExistsPodcastInterceptor implements PodcastInterceptor {
 
-	public static final int CONSOLE_LINE_WIDTH = 150;
+	private static final int CONSOLE_LINE_WIDTH = 150;
 	private PodcastRepository podcastRepository;
 
 	public FileAlreadyExistsPodcastInterceptor(PodcastRepository podcastRepository) {
