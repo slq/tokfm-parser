@@ -6,6 +6,10 @@ apply from: 'gradle/checkstyle.gradle'
 
 sourceCompatibility = 1.8
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5'
+}
+
 //create a single Jar with all dependencies
 task fatJar(type: Jar) {
     manifest {
