@@ -14,9 +14,9 @@ import static java.lang.String.format;
 public class TokFmRequest extends HttpGet {
 
 	private static final String MD5_PHRASE = "MwbJdy3jUC2xChua/";
-	public static final int MD5_SIZE = 32;
-	public static final int RADIX = 16;
-	public static final int MILIS = 1000;
+	private static final int MD5_SIZE = 32;
+	private static final int RADIX = 16;
+	private static final int MILIS = 1000;
 
 	private TokFmRequest(String uri) {
 		super(uri);

@@ -34,7 +34,7 @@ public class Podcasts {
 	}
 
 	public void forEach(Consumer<Podcast> consumer) {
-		records.stream().forEach(consumer);
+		records.forEach(consumer);
 	}
 
 	@Override

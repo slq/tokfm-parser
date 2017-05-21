@@ -11,9 +11,9 @@ import static org.apache.commons.lang3.StringUtils.substring;
 
 public class DownloadCountingOutputStream extends CountingOutputStream {
 
-	public static final double KILO = 1024.0;
-	public static final double MEGA = 1024.0;
-	public static final int CONSOLE_LINE_WIDTH = 150;
+	private static final double KILO = 1024.0;
+	private static final double MEGA = 1024.0;
+	private static final int CONSOLE_LINE_WIDTH = 150;
 	private final String streamName;
 
 	public DownloadCountingOutputStream(Path path) throws FileNotFoundException {
@@ -27,15 +27,15 @@ public class DownloadCountingOutputStream extends CountingOutputStream {
 		printDownloadStatus();
 	}
 
-	public String getStreamName() {
+	private String getStreamName() {
 		return streamName;
 	}
 
-	public double getDownloadedMB() {
+	private double getDownloadedMB() {
 		return getByteCount() / KILO / MEGA;
 	}
 
-	public void printDownloadStatus() {
+	private void printDownloadStatus() {
 		double byteCount = getDownloadedMB();
 		String streamName = getStreamName();
 		try {

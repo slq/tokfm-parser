@@ -31,7 +31,7 @@ public class TokFm {
 
 	private static final String MATCH_PATTERN_OPTION = "m";
 	private static final String SKIP_EXISTING_OPTION = "s";
-	public static final int ITERATION_MAX_COUNT = 100000;
+	private static final int ITERATION_MAX_COUNT = 100000;
 
 	private PodcastDownloadService podcastDownloadService;
 	private ResponseProcessor responseProcessor;
@@ -72,7 +72,7 @@ public class TokFm {
 		download(chain);
 	}
 
-	private void download(PodcastInterceptorChain chain) throws IOException, NoSuchAlgorithmException {
+	private void download(PodcastInterceptorChain chain) throws IOException {
 		for (int offset = 0; offset < ITERATION_MAX_COUNT; offset++) {
 			String url = format(START_URL, offset);
 

@@ -12,7 +12,8 @@ import static org.apache.commons.lang3.StringUtils.substring;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Podcast {
 
-	public static final int NAME_SIZE_LIMIT = 200;
+	private static final int NAME_SIZE_LIMIT = 200;
+
 	@JsonProperty("podcast_id")
 	private String id;
 

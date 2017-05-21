@@ -11,7 +11,7 @@ import static org.apache.commons.lang3.StringUtils.substring;
 public class SkipExistingFilesPodcastInterceptor implements PodcastInterceptor {
 
 	private static final String HOME_DIRECTORY = System.getProperty("user.home");
-	public static final int CONSOLE_LINE_WIDTH = 150;
+	private static final int CONSOLE_LINE_WIDTH = 150;
 
 	@Override
 	public boolean process(Podcast podcast) {
