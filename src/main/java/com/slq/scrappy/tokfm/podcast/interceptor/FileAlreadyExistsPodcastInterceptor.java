@@ -21,7 +21,7 @@ public class FileAlreadyExistsPodcastInterceptor implements PodcastInterceptor {
 		if (podcastRepository.exists(filename)) {
 			String shortFilename = substring(filename, 0, CONSOLE_LINE_WIDTH);
 			System.out.println(String.format("%-150s : Already exists. Exiting...", shortFilename));
-			return false;
+			throw new RuntimeException("File already exists: [" + shortFilename + "]");
 		}
 
 		return true;
