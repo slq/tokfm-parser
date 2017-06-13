@@ -38,10 +38,6 @@ public class DownloadCountingOutputStream extends CountingOutputStream {
 	private void printDownloadStatus() {
 		double byteCount = getDownloadedMB();
 		String streamName = getStreamName();
-		try {
-			System.out.write(String.format("%-150s : %.2f\r", substring(streamName, 0, CONSOLE_LINE_WIDTH), byteCount).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		System.out.print(String.format("%-150s : %.2f\r", substring(streamName, 0, CONSOLE_LINE_WIDTH), byteCount));
 	}
 }
