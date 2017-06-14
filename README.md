@@ -1,4 +1,4 @@
-# TokFM Parser [![Build Status](https://travis-ci.org/slq/tokfm-parser.svg?branch=master)](https://travis-ci.org/slq/tokfm-parser)
+# TokFM Parser [![Build Status](https://travis-ci.org/slq/tokfm-parser.svg?branch=master)](https://travis-ci.org/slq/tokfm-parser) ![Travis](https://img.shields.io/badge/license-GPL-ff69b4.svg)
 Parser / downloader for tokfm audition archives.
 
 ### Usage
