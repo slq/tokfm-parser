@@ -9,11 +9,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 public class HttpClientFactory {
 
-	public static final String PROXY_HOST = Configuration.getProperty("http.proxyHost");
-	public static final String PROXY_PORT = Configuration.getProperty("http.proxyPort");
-	public static final String PROXY_USER = Configuration.getProperty("http.proxyUser");
-	public static final String PROXY_PASSWORD = Configuration.getProperty("http.proxyPassword");
-
 	private HttpClientFactory() {
 	}
 
@@ -22,15 +17,20 @@ public class HttpClientFactory {
 	}
 
 	public static HttpClient createNtlmProxyClient() {
-		System.setProperty("http.proxyHost", PROXY_HOST);
-		System.setProperty("http.proxyPort", PROXY_PORT);
+		final String proxyHost = Configuration.getProperty("http.proxyHost");
+		final String proxyPort = Configuration.getProperty("http.proxyPort");
+		final String proxyUser = Configuration.getProperty("http.proxyUser");
+		final String proxyPassword = Configuration.getProperty("http.proxyPassword");
+
+		System.setProperty("http.proxyHost", proxyHost);
+		System.setProperty("http.proxyPort", proxyPort);
 
 		DefaultHttpClient client = new DefaultHttpClient();
 		client.getCredentialsProvider().setCredentials(
-				new AuthScope(PROXY_HOST, Integer.parseInt(PROXY_PORT)),
-				new NTCredentials(PROXY_USER + ":" + PROXY_PASSWORD));
+				new AuthScope(proxyHost, Integer.parseInt(proxyPort)),
+				new NTCredentials(proxyUser + ":" + proxyPassword));
 
-		HttpHost proxy = new HttpHost(PROXY_HOST, Integer.parseInt(PROXY_PORT));
+		HttpHost proxy = new HttpHost(proxyHost, Integer.parseInt(proxyPort));
 		client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
 
 		return client;
