@@ -75,9 +75,7 @@ public class TokFm {
 	private void download(PodcastInterceptorChain chain) throws IOException {
 		for (int offset = 0; offset < ITERATION_MAX_COUNT; offset++) {
 			String url = format(START_URL, offset);
-
 			Podcasts podcasts = podcastDownloadService.listPodcasts(url);
-
 			podcasts.forEach(chain::process);
 		}
 	}
