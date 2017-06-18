@@ -17,7 +17,7 @@ task fatJar(type: Jar) {
 	manifest {
 		attributes 'Implementation-Title': 'Tok FM Fat Jar File',
 				'Implementation-Version': version,
-				'Main-Class': 'com.slq.scrappy.to	kfm.TokFm'
+				'Main-Class': 'com.slq.scrappy.tokfm.TokFm'
 	}
 	baseName = project.name + '-all'
 	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
