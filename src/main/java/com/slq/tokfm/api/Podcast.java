@@ -3,17 +3,17 @@ package com.slq.tokfm.api;
 import static java.lang.String.format;
 
 public interface Podcast {
-    String getId();
+	String getId();
 
-    String getName();
+	String getName();
 
-    String getAudio();
+	String getAudio();
 
-    String getSeriesName();
+	String getSeriesName();
 
-    String getEmissionText();
+	String getEmissionText();
 
-    default String getTargetFilename() {
-        return format("%s - %s - %s.mp3", getEmissionText(), getSeriesName(), getName());
-    }
+	default String getTargetFilename() {
+		return format("%s - %s - %s.mp3", getEmissionText(), getSeriesName(), getName());
+	}
 }

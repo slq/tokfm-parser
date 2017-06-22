@@ -7,7 +7,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.regex.Pattern;
 
-import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.substring;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

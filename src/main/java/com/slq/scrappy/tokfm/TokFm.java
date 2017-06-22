@@ -84,9 +84,9 @@ public class TokFm {
 
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException, ParseException {
 		//HttpClient client = HttpClientFactory.createNtlmProxyClient();
-//		HttpClient client = HttpClientFactory.createClient();
-//		TokFm tokFm = new TokFm(new PodcastDownloadService(client), new ResponseProcessor());
-//		tokFm.downloadPodcasts(args);
+		//HttpClient client = HttpClientFactory.createClient();
+		//TokFm tokFm = new TokFm(new PodcastDownloadService(client), new ResponseProcessor());
+		//tokFm.downloadPodcasts(args);
 
 		List<PodcastData> podcasts = new HttpPodcastInfoService().getAll();
 		podcasts.stream()

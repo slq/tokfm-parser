@@ -12,20 +12,20 @@ import static org.jsoup.Jsoup.connect;
 
 public class HttpPodcastInfoService implements PodcastInfoService {
 
-    @Override
-    public List<PodcastData> getAll() {
-        String url = String.format("http://audycje.tokfm.pl/podcasts?offset=%d", 1);
-        String json = null;
-        try {
-            json = connect(url)
-                    .ignoreContentType(true)
-                    .execute()
-                    .body();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+	@Override
+	public List<PodcastData> getAll() {
+		String url = String.format("http://audycje.tokfm.pl/podcasts?offset=%d", 1);
+		String json = null;
+		try {
+			json = connect(url)
+					.ignoreContentType(true)
+					.execute()
+					.body();
+		} catch (IOException e) {
+			throw new RuntimeException("Error while connecting to " + url, e);
+		}
 
-        Podcasts podcasts = createJsonObjectMapper().readValue(json, Podcasts.class);
-        return podcasts.getPodcasts();
-    }
+		Podcasts podcasts = createJsonObjectMapper().readValue(json, Podcasts.class);
+		return podcasts.getPodcasts();
+	}
 }
