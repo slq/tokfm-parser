@@ -1,6 +1,6 @@
 package com.slq.scrappy.tokfm;
 
-import com.slq.scrappy.tokfm.podcast.Podcast;
+import com.slq.scrappy.tokfm.podcast.PodcastData;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.HttpGet;
 
@@ -22,7 +22,7 @@ public class TokFmRequest extends HttpGet {
 		super(uri);
 	}
 
-	public static TokFmRequest from(Podcast podcast) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+	public static TokFmRequest from(PodcastData podcast) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 		String hexTime = currentTimeSecondsToHex();
 		String audioName = podcast.getAudio();
 		byte[] digest = digest(hexTime, audioName);

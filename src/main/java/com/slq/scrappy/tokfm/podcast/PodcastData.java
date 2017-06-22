@@ -2,6 +2,7 @@ package com.slq.scrappy.tokfm.podcast;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.slq.tokfm.api.Podcast;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.regex.Pattern;
@@ -10,7 +11,7 @@ import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.substring;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Podcast {
+public class PodcastData implements Podcast {
 
 	private static final int NAME_SIZE_LIMIT = 200;
 
@@ -29,25 +30,30 @@ public class Podcast {
 	@JsonProperty("podcast_emission_text")
 	private String emissionText;
 
-	private Podcast() {
+	private PodcastData() {
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public String getName() {
 		return normalize(name);
 	}
 
+	@Override
 	public String getAudio() {
 		return audio;
 	}
 
+	@Override
 	public String getSeriesName() {
 		return normalize(seriesName);
 	}
 
+	@Override
 	public String getEmissionText() {
 		return normalize(emissionText);
 	}
@@ -94,10 +100,5 @@ public class Podcast {
 		}
 
 		return result.replaceAll(Pattern.quote(from), to);
-	}
-
-	public String getTargetFilename() {
-		return format("%s - %s - %s.mp3", getEmissionText(), getSeriesName(), getName());
-		//.replaceAll(".", ".");
 	}
 }

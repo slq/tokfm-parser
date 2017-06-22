@@ -1,7 +1,7 @@
 package com.slq.scrappy.tokfm.podcast.interceptor;
 
-import com.slq.scrappy.tokfm.podcast.Podcast;
+import com.slq.scrappy.tokfm.podcast.PodcastData;
 
 public interface PodcastInterceptor {
-	boolean process(Podcast podcast);
+	boolean process(PodcastData podcast);
 }

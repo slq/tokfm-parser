@@ -1,6 +1,6 @@
 package com.slq.scrappy.tokfm.podcast.interceptor;
 
-import com.slq.scrappy.tokfm.podcast.Podcast;
+import com.slq.scrappy.tokfm.podcast.PodcastData;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,7 +14,7 @@ public class SkipExistingFilesPodcastInterceptor implements PodcastInterceptor {
 	private static final int CONSOLE_LINE_WIDTH = 150;
 
 	@Override
-	public boolean process(Podcast podcast) {
+	public boolean process(PodcastData podcast) {
 		String filename = podcast.getTargetFilename();
 		Path targetPath = Paths.get(HOME_DIRECTORY, "Downloads", "TokFM", filename);
 

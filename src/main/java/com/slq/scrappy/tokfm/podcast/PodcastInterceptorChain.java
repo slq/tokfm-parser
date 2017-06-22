@@ -12,7 +12,7 @@ public class PodcastInterceptorChain {
 		this.interceptors = interceptors;
 	}
 
-	public void process(Podcast podcast) {
+	public void process(PodcastData podcast) {
 		for (PodcastInterceptor interceptor : interceptors) {
 			if (!interceptor.process(podcast)) {
 				return;

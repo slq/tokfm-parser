@@ -20,7 +20,7 @@ public class FileAlreadyExistsPodcastInterceptorTest {
 	private static final String PODCAST_NAME = "someName";
 
 	@Mock private PodcastRepository podcastRepository;
-	@Mock private Podcast podcast;
+	@Mock private PodcastData podcast;
 
 	private FileAlreadyExistsPodcastInterceptor interceptor;
 

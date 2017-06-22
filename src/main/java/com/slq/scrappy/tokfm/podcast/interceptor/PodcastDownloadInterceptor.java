@@ -2,7 +2,7 @@ package com.slq.scrappy.tokfm.podcast.interceptor;
 
 import com.slq.scrappy.tokfm.TokFmRequest;
 import com.slq.scrappy.tokfm.TokFmRequestFactory;
-import com.slq.scrappy.tokfm.podcast.Podcast;
+import com.slq.scrappy.tokfm.podcast.PodcastData;
 import com.slq.scrappy.tokfm.podcast.PodcastDownloadService;
 import com.slq.scrappy.tokfm.podcast.ResponseProcessor;
 import org.apache.http.HttpResponse;
@@ -24,7 +24,7 @@ public class PodcastDownloadInterceptor implements PodcastInterceptor {
 	}
 
 	@Override
-	public boolean process(Podcast podcast) {
+	public boolean process(PodcastData podcast) {
 		String filename = podcast.getTargetFilename();
 		Path targetPath = Paths.get(HOME_DIRECTORY, "Downloads", "TokFM", filename);
 

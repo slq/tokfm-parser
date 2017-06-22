@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 public class Podcasts {
 
 	@JsonProperty
-	private List<Podcast> records = new ArrayList<>();
+	private List<PodcastData> records = new ArrayList<>();
 
 	private long total;
 
@@ -21,7 +21,7 @@ public class Podcasts {
 	private Podcasts() {
 	}
 
-	public List<Podcast> getPodcasts() {
+	public List<PodcastData> getPodcasts() {
 		return records;
 	}
 
@@ -33,7 +33,7 @@ public class Podcasts {
 		return limit;
 	}
 
-	public void forEach(Consumer<Podcast> consumer) {
+	public void forEach(Consumer<PodcastData> consumer) {
 		records.forEach(consumer);
 	}
 

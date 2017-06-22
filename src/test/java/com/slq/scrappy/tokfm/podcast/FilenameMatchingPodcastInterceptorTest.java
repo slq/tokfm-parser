@@ -17,7 +17,7 @@ public class FilenameMatchingPodcastInterceptorTest {
 	private static final String MATCHING_PATTERN = "\\s+";
 
 	@Mock
-	private Podcast podcast;
+	private PodcastData podcast;
 
 	private FilenameMatchingPodcastInterceptor interceptor;
 

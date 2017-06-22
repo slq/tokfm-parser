@@ -1,16 +1,16 @@
 package com.slq.scrappy.tokfm;
 
-import com.slq.scrappy.tokfm.podcast.Podcast;
+import com.slq.scrappy.tokfm.podcast.PodcastData;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 
-public class PodcastAssert extends AbstractAssert<PodcastAssert, Podcast> {
+public class PodcastAssert extends AbstractAssert<PodcastAssert, PodcastData> {
 
-	private PodcastAssert(Podcast podcast, Class<?> selfType) {
+	private PodcastAssert(PodcastData podcast, Class<?> selfType) {
 		super(podcast, selfType);
 	}
 
-	public static PodcastAssert assertThat(Podcast actual) {
+	public static PodcastAssert assertThat(PodcastData actual) {
 		return new PodcastAssert(actual, PodcastAssert.class);
 	}
 

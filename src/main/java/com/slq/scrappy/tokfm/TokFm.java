@@ -1,5 +1,6 @@
 package com.slq.scrappy.tokfm;
 
+import com.slq.scrappy.tokfm.podcast.PodcastData;
 import com.slq.scrappy.tokfm.podcast.PodcastDownloadService;
 import com.slq.scrappy.tokfm.podcast.PodcastInterceptorChain;
 import com.slq.scrappy.tokfm.podcast.Podcasts;
@@ -11,12 +12,13 @@ import com.slq.scrappy.tokfm.podcast.interceptor.PodcastInterceptor;
 import com.slq.scrappy.tokfm.podcast.interceptor.SkipExistingFilesPodcastInterceptor;
 import com.slq.scrappy.tokfm.podcast.repository.FilePodcastRepository;
 import com.slq.scrappy.tokfm.podcast.repository.PodcastRepository;
+import com.slq.tokfm.api.Podcast;
+import com.slq.tokfm.internal.HttpPodcastInfoService;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.http.client.HttpClient;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -27,7 +29,7 @@ import static java.lang.String.format;
 
 public class TokFm {
 
-	private static final String START_URL = "http://audycje.tokfm.pl/podcasts?offset=%d";
+	public static final String START_URL = "http://audycje.tokfm.pl/podcasts?offset=%d";
 
 	private static final String MATCH_PATTERN_OPTION = "m";
 	private static final String SKIP_EXISTING_OPTION = "s";
@@ -82,8 +84,13 @@ public class TokFm {
 
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException, ParseException {
 		//HttpClient client = HttpClientFactory.createNtlmProxyClient();
-		HttpClient client = HttpClientFactory.createClient();
-		TokFm tokFm = new TokFm(new PodcastDownloadService(client), new ResponseProcessor());
-		tokFm.downloadPodcasts(args);
+//		HttpClient client = HttpClientFactory.createClient();
+//		TokFm tokFm = new TokFm(new PodcastDownloadService(client), new ResponseProcessor());
+//		tokFm.downloadPodcasts(args);
+
+		List<PodcastData> podcasts = new HttpPodcastInfoService().getAll();
+		podcasts.stream()
+				.map(Podcast::getSeriesName)
+				.forEach(System.out::println);
 	}
 }

@@ -1,6 +1,6 @@
 package com.slq.scrappy.tokfm;
 
-import com.slq.scrappy.tokfm.podcast.Podcast;
+import com.slq.scrappy.tokfm.podcast.PodcastData;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -10,7 +10,7 @@ public class TokFmRequestFactory {
 	private TokFmRequestFactory() {
 	}
 
-	public static TokFmRequest create(Podcast podcast) {
+	public static TokFmRequest create(PodcastData podcast) {
 		try {
 			return TokFmRequest.from(podcast);
 		} catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {

@@ -1,6 +1,6 @@
 package com.slq.scrappy.tokfm.podcast.interceptor;
 
-import com.slq.scrappy.tokfm.podcast.Podcast;
+import com.slq.scrappy.tokfm.podcast.PodcastData;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,7 +14,7 @@ public class FilenameMatchingPodcastInterceptor implements PodcastInterceptor {
 	}
 
 	@Override
-	public boolean process(Podcast podcast) {
+	public boolean process(PodcastData podcast) {
 		return matching(pattern, podcast.getTargetFilename());
 	}
 

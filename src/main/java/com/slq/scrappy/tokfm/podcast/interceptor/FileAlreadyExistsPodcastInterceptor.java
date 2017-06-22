@@ -1,6 +1,6 @@
 package com.slq.scrappy.tokfm.podcast.interceptor;
 
-import com.slq.scrappy.tokfm.podcast.Podcast;
+import com.slq.scrappy.tokfm.podcast.PodcastData;
 import com.slq.scrappy.tokfm.podcast.repository.PodcastRepository;
 
 import static org.apache.commons.lang3.StringUtils.substring;
@@ -15,7 +15,7 @@ public class FileAlreadyExistsPodcastInterceptor implements PodcastInterceptor {
 	}
 
 	@Override
-	public boolean process(Podcast podcast) {
+	public boolean process(PodcastData podcast) {
 		String filename = podcast.getTargetFilename();
 
 		if (podcastRepository.exists(filename)) {

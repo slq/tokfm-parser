@@ -1,6 +1,6 @@
 package com.slq.scrappy.tokfm;
 
-import com.slq.scrappy.tokfm.podcast.Podcast;
+import com.slq.scrappy.tokfm.podcast.PodcastData;
 import org.json.JSONObject;
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class PodcastMappingTest {
 	public void shouldReadPayloadFromJson() {
 		String json = createJson();
 
-		Podcast podcast = createJsonObjectMapper().readValue(json, Podcast.class);
+		PodcastData podcast = createJsonObjectMapper().readValue(json, PodcastData.class);
 
 		PodcastAssert.assertThat(podcast)
 				.hasId(PODCAST_ID)
@@ -39,7 +39,7 @@ public class PodcastMappingTest {
 
 	@Test
 	public void shouldWritePodcastToJson() {
-		Podcast podcast = createJsonObjectMapper().readValue(createJson(), Podcast.class);
+		PodcastData podcast = createJsonObjectMapper().readValue(createJson(), PodcastData.class);
 
 		String json = createJsonObjectMapper().writeValueAsString(podcast);
 		JSONObject jsonObject = new JSONObject(json);
