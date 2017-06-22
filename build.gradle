@@ -5,6 +5,7 @@ apply plugin: 'java'
 apply from: "gradle/ide.gradle"
 apply from: 'gradle/checkstyle.gradle'
 apply plugin: 'pmd'
+apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.8
 
@@ -37,6 +38,22 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
 	archives sourcesJar
 	archives javadocJar
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+
+			artifact sourcesJar {
+				classifier "sources"
+			}
+
+			artifact javadocJar {
+				classifier "javadoc"
+			}
+		}
+	}
 }
 
 repositories {
